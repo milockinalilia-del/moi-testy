@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Контрольна робота за І семестр — 6 клас</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=PT+Serif:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<style>
+:root {
+  --accent: #5b4fcf;
+  --accent-light: #8c7cf5;
+  --accent-dark: #3d2fa0;
+  --bg: #f3f2fb;
+  --card-bg: #ffffff;
+  --text: #1a1a2e;
+  --muted: #6b6a8a;
+  --green: #2ecc71;
+  --red: #e74c3c;
+  --solution-text: #4a3400;
+  --border: #dddaf5;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'PT Serif', serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+.header {
+  background: linear-gradient(135deg, #3d2fa0 0%, #5b4fcf 55%, #8c7cf5 100%);
+  padding: 28px 32px 24px; color: white;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 4px 24px rgba(91,79,207,0.35);
+}
+.header-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px; }
+.header h1 { font-family: 'Unbounded', sans-serif; font-size: 1.15rem; font-weight: 800; letter-spacing: -0.3px; line-height: 1.3; }
+.header-sub { font-size: 0.8rem; opacity: 0.82; margin-top: 3px; }
+.variant-badge { background: rgba(255,255,255,0.18); border: 1.5px solid rgba(255,255,255,0.35); border-radius: 8px; padding: 5px 14px; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 600; white-space: nowrap; letter-spacing: 0.5px; }
+.author { font-style: italic; font-size: 0.78rem; opacity: 0.75; margin-top: 2px; }
+.progress-wrap { margin-top: 14px; }
+.progress-info { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; opacity: 0.88; margin-bottom: 5px; }
+.progress-bar-bg { background: rgba(255,255,255,0.2); border-radius: 99px; height: 7px; overflow: hidden; }
+.progress-bar-fill { height: 100%; background: linear-gradient(90deg, #a0f0c8, #5fffb0); border-radius: 99px; transition: width 0.5s cubic-bezier(.4,0,.2,1); width: 0%; }
+
+.main { max-width: 780px; margin: 36px auto 60px; padding: 0 18px; }
+.section-label { font-family: 'Unbounded', sans-serif; font-size: 0.7rem; font-weight: 600; letter-spacing: 1.5px; color: var(--accent); text-transform: uppercase; margin: 32px 0 14px; padding-left: 4px; }
+.section-instruction { background: linear-gradient(135deg, #edeafb, #f8f7ff); border-left: 4px solid var(--accent-light); border-radius: 0 10px 10px 0; padding: 11px 16px; font-size: 0.88rem; color: var(--muted); margin-bottom: 18px; font-style: italic; }
+
+.card { background: var(--card-bg); border-radius: 16px; box-shadow: 0 2px 14px rgba(91,79,207,0.08); border: 1.5px solid var(--border); margin-bottom: 18px; overflow: hidden; transition: box-shadow 0.25s; border-left: 5px solid var(--border); }
+.card.correct { border-left-color: var(--green); }
+.card.wrong   { border-left-color: var(--red); }
+.card-inner { padding: 20px 22px 18px; }
+.task-num { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 600; color: var(--accent-light); letter-spacing: 1px; margin-bottom: 6px; text-transform: uppercase; }
+.task-text { font-size: 1.02rem; line-height: 1.9; color: var(--text); margin-bottom: 16px; }
+
+.options-table { display: grid; grid-template-columns: repeat(4, 1fr); gap: 9px; margin-bottom: 6px; }
+@media(max-width: 540px) { .options-table { grid-template-columns: repeat(2, 1fr); } }
+
+.opt-btn { display: flex; align-items: center; gap: 8px; background: #f7f6ff; border: 1.5px solid #dddaf5; border-radius: 10px; padding: 10px 12px; cursor: pointer; transition: all 0.18s; font-family: 'PT Serif', serif; font-size: 0.94rem; color: var(--text); text-align: left; min-height: 52px; }
+.opt-btn:hover:not(:disabled) { background: #ebe8ff; border-color: var(--accent-light); transform: translateY(-1px); box-shadow: 0 3px 10px rgba(91,79,207,0.12); }
+.opt-letter { font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 0.75rem; color: var(--accent); min-width: 16px; flex-shrink: 0; }
+.opt-btn.correct-ans { background: #e8faf0; border-color: var(--green); color: #1a5c36; }
+.opt-btn.correct-ans .opt-letter { color: var(--green); }
+.opt-btn.wrong-ans { background: #fdecea; border-color: var(--red); color: #8b1a12; }
+.opt-btn.wrong-ans .opt-letter { color: var(--red); }
+.opt-btn:disabled { cursor: default; }
+
+.feedback { display: none; margin-top: 12px; padding: 10px 14px; border-radius: 9px; font-size: 0.88rem; font-weight: 600; }
+.feedback.ok  { background: #e8faf0; color: #1a5c36; align-items: center; gap: 7px; }
+.feedback.err { background: #fdecea; color: #8b1a12; align-items: center; gap: 7px; }
+
+.show-sol-btn { margin-top: 10px; background: none; border: 1.5px solid #c9a227; border-radius: 8px; padding: 7px 14px; color: #8a6800; font-family: 'PT Serif', serif; font-size: 0.84rem; cursor: pointer; transition: background 0.15s; display: none; }
+.show-sol-btn:hover { background: #fdf3d0; }
+.solution-box { display: none; margin-top: 10px; background: #fdf8ec; border: 1.5px solid #e6cc80; border-radius: 10px; padding: 13px 16px; color: var(--solution-text); font-size: 0.9rem; line-height: 1.9; }
+
+/* MATCHING */
+.matching-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 4px; }
+@media(max-width: 500px){ .matching-wrap { grid-template-columns: 1fr; } }
+.matching-left-col, .matching-right-col { display: flex; flex-direction: column; gap: 9px; }
+.match-question { background: #f0eeff; border: 1.5px dashed #b0a5e8; border-radius: 11px; padding: 10px 12px; font-size: 0.88rem; }
+.q-num { font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 0.7rem; color: var(--accent); display: block; margin-bottom: 3px; }
+.match-drop-zone { margin-top: 6px; min-height: 34px; border: 1.5px dashed #c0bae8; border-radius: 7px; background: rgba(255,255,255,0.6); display: flex; align-items: center; justify-content: center; font-size: 0.78rem; color: #9b99ba; transition: background 0.15s, border-color 0.15s; padding: 4px 8px; text-align: center; }
+.match-drop-zone.over { background: #e0dbff; border-color: var(--accent); }
+.match-drop-zone.filled { background: #5b4fcf; border-color: #5b4fcf; color: white; font-size: 0.85rem; font-weight: 600; }
+.match-drop-zone.drop-correct { background: #e8faf0; border-color: var(--green); color: #1a5c36; font-weight: 600; }
+.match-drop-zone.drop-wrong   { background: #fdecea; border-color: var(--red); color: #8b1a12; font-weight: 600; }
+.match-answer-chip { background: white; border: 1.5px solid var(--accent-light); border-radius: 9px; padding: 9px 12px; font-size: 0.88rem; cursor: grab; user-select: none; transition: all 0.15s; display: flex; align-items: center; gap: 8px; box-shadow: 0 2px 6px rgba(91,79,207,0.08); }
+.match-answer-chip:hover { background: #ebe8ff; transform: translateY(-1px); }
+.match-answer-chip.dragging { opacity: 0.4; }
+.chip-letter { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; font-weight: 600; color: var(--accent); background: #edeafb; border-radius: 5px; padding: 2px 6px; }
+.match-answer-chip.used { opacity: 0.35; pointer-events: none; }
+.check-match-btn { margin-top: 14px; background: var(--accent); color: white; border: none; border-radius: 10px; padding: 11px 24px; font-family: 'Unbounded', sans-serif; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: background 0.18s, transform 0.15s; letter-spacing: 0.3px; }
+.check-match-btn:hover { background: var(--accent-dark); transform: translateY(-1px); }
+
+/* RESULTS */
+.results-wrap { display: none; background: white; border: 1.5px solid var(--border); border-radius: 20px; padding: 32px 28px; margin-top: 40px; box-shadow: 0 4px 30px rgba(91,79,207,0.10); }
+.results-wrap h2 { font-family: 'Unbounded', sans-serif; font-size: 1.1rem; color: var(--accent-dark); margin-bottom: 20px; }
+.result-score-bar-bg { background: #edeafb; border-radius: 99px; height: 18px; overflow: hidden; margin: 8px 0 18px; }
+.result-score-bar-fill { height: 100%; border-radius: 99px; transition: width 1s cubic-bezier(.4,0,.2,1); width: 0%; }
+.result-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 22px; }
+.stat-box { background: var(--bg); border-radius: 12px; padding: 14px 12px; text-align: center; }
+.stat-num { font-family: 'JetBrains Mono', monospace; font-size: 1.8rem; font-weight: 600; display: block; }
+.stat-label { font-size: 0.75rem; color: var(--muted); margin-top: 2px; display: block; }
+.errors-list { margin-top: 16px; }
+.errors-list h3 { font-family: 'Unbounded', sans-serif; font-size: 0.78rem; color: var(--muted); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+.error-tag { display: inline-block; background: #fdecea; color: #8b1a12; border-radius: 6px; padding: 4px 10px; font-size: 0.8rem; margin: 3px 4px 3px 0; font-family: 'JetBrains Mono', monospace; }
+.recommendation { margin-top: 18px; background: linear-gradient(135deg, #edeafb, #f8f7ff); border-left: 4px solid var(--accent); border-radius: 0 12px 12px 0; padding: 13px 16px; font-size: 0.9rem; color: var(--accent-dark); line-height: 1.6; }
+.recommendation strong { font-family: 'Unbounded', sans-serif; font-size: 0.78rem; display: block; margin-bottom: 5px; }
+.all-done-btn { display: none; margin: 30px auto 0; background: linear-gradient(135deg, #3d2fa0, #5b4fcf); color: white; border: none; border-radius: 12px; padding: 14px 32px; font-family: 'Unbounded', sans-serif; font-size: 0.82rem; font-weight: 600; cursor: pointer; letter-spacing: 0.5px; transition: opacity 0.18s, transform 0.15s; box-shadow: 0 4px 16px rgba(91,79,207,0.3); width: 100%; max-width: 380px; }
+.all-done-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-top">
+    <div>
+      <h1>Контрольна робота за І семестр</h1>
+      <div class="header-sub">Математика &middot; 6 клас</div>
+      <div class="author">Автор: Мілочкіна Л.В.</div>
+    </div>
+    <div class="variant-badge">Варіант 1</div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-info">
+      <span id="prog-text">Виконано: 0 / 10</span>
+      <span id="prog-pct">0%</span>
+    </div>
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-bar"></div></div>
+  </div>
+</header>
+
+<main class="main">
+  <div class="section-label">Завдання 1–9</div>
+  <div class="section-instruction">Обери правильну відповідь із запропонованих (А–Г).</div>
+
+  <!-- TASK 1 -->
+  <div class="card" id="card-1">
+    <div class="card-inner">
+      <div class="task-num">Завдання 1</div>
+      <div class="task-text">Обчисли: <span id="t1q"></span></div>
+      <div class="options-table" id="opts-1">
+        <button class="opt-btn" onclick="choose(1,'А',this)"><span class="opt-letter">А</span><span id="t1a"></span></button>
+        <button class="opt-btn" onclick="choose(1,'Б',this)"><span class="opt-letter">Б</span><span id="t1b"></span></button>
+        <button class="opt-btn" onclick="choose(1,'В',this)"><span class="opt-letter">В</span><span id="t1c"></span></button>
+        <button class="opt-btn" onclick="choose(1,'Г',this)"><span class="opt-letter">Г</span><span id="t1d"></span></button>
+      </div>
+      <div class="feedback" id="fb-1"></div>
+      <button class="show-sol-btn" id="sol-btn-1" onclick="toggleSol(1)">&#x1F4A1; Показати розв'язок</button>
+      <div class="solution-box" id="sol-1">
+        Зведемо до спільного знаменника. НСК(9,&nbsp;12)&nbsp;=&nbsp;36.<br>
+        <span id="s1a"></span>&nbsp;&nbsp;&nbsp;<span id="s1b"></span><br><br>
+        <span id="s1c"></span><br><br>
+        <strong>Відповідь: В</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- TASK 2 -->
+  <div class="card" id="card-2">
+    <div class="card-inner">
+      <div class="task-num">Завдання 2</div>
+      <div class="task-text">Виконай ділення: <span id="t2q"></span></div>
+      <div class="options-table" id="opts-2">
+        <button class="opt-btn" onclick="choose(2,'А',this)"><span class="opt-letter">А</span><span id="t2a"></span></button>
+        <button class="opt-btn" onclick="choose(2,'Б',this)"><span class="opt-letter">Б</span><span id="t2b"></span></button>
+        <button class="opt-btn" onclick="choose(2,'В',this)"><span class="opt-letter">В</span><span id="t2c"></span></button>
+        <button class="opt-btn" onclick="choose(2,'Г',this)"><span class="opt-letter">Г</span><span id="t2d"></span></button>
+      </div>
+      <div class="feedback" id="fb-2"></div>
+      <button class="show-sol-btn" id="sol-btn-2" onclick="toggleSol(2)">&#x1F4A1; Показати розв'язок</button>
+      <div class="solution-box" id="sol-2">
+        <span id="s2a"></span><br><br>
+        <strong>Відповідь: Г</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- TASK 3 -->
+  <div class="card" id="card-3">
+    <div class="card-inner">
+      <div class="task-num">Завдання 3</div>
+      <div class="task-text">Визнач масштаб схеми, якщо 1 см — 70 м на місцевості.</div>
+      <div class="options-table" id="opts-3">
+        <button class="opt-btn" onclick="choose(3,'А',this)"><span class="opt-letter">А</span><span class="otxt">1&thinsp;:&thinsp;70</span></button>
+        <button class="opt-btn" onclick="choose(3,'Б',this)"><span class="opt-letter">Б</span><span class="otxt">1&thinsp;:&thinsp;70&thinsp;000</span></button>
+        <button class="opt-btn" onclick="choose(3,'В',this)"><span class="opt-letter">В</span><span class="otxt">1&thinsp;:&thinsp;7000</span></button>
+        <button class="opt-btn" onclick="choose(3,'Г',this)"><span class="opt-letter">Г</span><span class="otxt">1&thinsp;:&thinsp;700&thinsp;000</span></button>
+      </div>
+      <div class="feedback" id="fb-3"></div>
+      <button class="show-sol-btn" id="sol-btn-3" onclick="toggleSol(3)">&#x1F4A1; Показати розв'язок</button>
+      <div class="solution-box" id="sol-3">
+        70&nbsp;м = 7000&nbsp;см.<br>
+        Масштаб: 1&nbsp;см на плані відповідає 7000&nbsp;см на місцевості.<br><br>
+        <strong>Відповідь: В — 1 : 7000</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- TASK 4 -->
+  <div class="card" id="card-4">
+    <div class="card-inner">
+      <div class="task-num">Завдання 4</div>
+      <div class="task-text">6% поля засіяно соєю, а це 12 га. Знайди площу цього поля.</div>
+      <div class="options-table" id="opts-4">
+        <button class="opt-btn" onclick="choose(4,'А',this)"><span class="opt-letter">А</span><span class="otxt">72 га</span></button>
+        <button class="opt-btn" onclick="choose(4,'Б',this)"><span class="opt-letter">Б</span><span class="otxt">200 га</span></button>
+        <button class="opt-btn" onclick="choose(4,'В',this)"><span class="opt-letter">В</span><span class="otxt">2 га</span></button>
+        <button class="opt-btn" onclick="choose(4,'Г',this)"><span class="opt-letter">Г</span><span class="otxt">20 га</span></button>
+      </div>
+      <div class="feedback" id="fb-4"></div>
+      <button class="show-sol-btn" id="sol-btn-4" onclick="toggleSol(4)">&#x1F4A1; Показати розв'язок</button>
+      <div class="solution-box" id="sol-4">
+        6% = 12 га<br>
+        1% = 12 ÷ 6 = 2 га<br>
+        100% = 2 &times; 100 = 200 га<br><br>
+        <strong>Відповідь: Б — 200 га</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- TASK 5 -->
+  <div class="card" id="card-5">
+    <div class="card-inner">
+      <div class="task-num">Завдання 5</div>
+      <div class="task-text">Знайди невідомий член пропорції <span id="t5q"></span>.</div>
+      <div class="options-table" id="opts-5">
+        <button class="opt-btn" onclick="choose(5,'А',this)"><span class="opt-letter">А</span><span class="otxt">20</span></button>
+        <button class="opt-btn" onclick="choose(5,'Б',this)"><span class="opt-letter">Б</span><span class="otxt">3,2</span></button>
+        <button class="opt-btn" onclick="choose(5,'В',this)"><span class="opt-letter">В</span><span class="otxt">1,25</span></button>
+        <button class="opt-btn" onclick="choose(5,'Г',this)"><span class="opt-letter">Г</span><span class="otxt">16</span></button>
+      </div>
+      <div class="feedback" id="fb-5"></div>
+      <button class="show-sol-btn" id="sol-btn-5" onclick="toggleSol(5)">&#x1F4A1; Показати розв'язок</button>
+      <div class="solution-box" id="sol-5">
+        Добуток крайніх = добуток середніх:<br>
+        <span id="s5a"></span><br>
+        <span id="s5b"></span><br><br>
+        <strong>Відповідь: А — 20</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- TASK 6 -->
+  <div class="card" id="card-6">
+    <div class="card-inner">
+      <div class="task-num">Завдання 6</div>
+      <div class="task-text">Знайди у відсотках зміну величини від 4 дм до 32 см.</div>
+      <div class="options-table" id="opts-6">
+        <button class="opt-btn" onclick="choose(6,'А',this)"><span class="opt-letter">А</span><span class="otxt">8%</span></button>
+        <button class="opt-btn" onclick="choose(6,'Б',this)"><span class="opt-letter">Б</span><span class="otxt">20%</span></button>
+        <button class="opt-btn" onclick="choose(6,'В',this)"><span class="opt-letter">В</span><span class="otxt">25%</span></button>
+        <button class="opt-btn" onclick="choose(6,'Г',this)"><span class="opt-letter">Г</span><span class="otxt">32%</span></button>
+      </div>
+      <div class="feedback" id="fb-6"></div>
+      <button class="show-sol-btn" id="sol-btn-6" onclick="toggleSol(6)">&#x1F4A1; Показати розв'язок</button>
+      <div class="solution-box" id="sol-6">
+        4 дм = 40 см. Нова величина — 32 см.<br>
+        Зменшення: 40 &minus; 32 = 8 см.<br>
+        Відсоток зміни: <span id="s6a"></span><br><br>
+        <strong>Відповідь: Б — 20%</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- TASK 7 -->
+  <div class="card" id="card-7">
+    <div class="card-inner">
+      <div class="task-num">Завдання 7</div>
+      <div class="task-text"><span id="t7q"></span>. Укажи правильну нерівність.</div>
+      <div class="options-table" id="opts-7">
+        <button class="opt-btn" onclick="choose(7,'А',this)"><span class="opt-letter">А</span><span id="t7a"></span></button>
+        <button class="opt-btn" onclick="choose(7,'Б',this)"><span class="opt-letter">Б</span><span id="t7b"></span></button>
+        <button class="opt-btn" onclick="choose(7,'В',this)"><span class="opt-letter">В</span><span id="t7c"></span></button>
+        <button class="opt-btn" onclick="choose(7,'Г',this)"><span class="opt-letter">Г</span><span id="t7d"></span></button>
+      </div>
+      <div class="feedback" id="fb-7"></div>
+      <button class="show-sol-btn" id="sol-btn-7" onclick="toggleSol(7)">&#x1F4A1; Показати розв'язок</button>
+      <div class="solution-box" id="sol-7">
+        <span id="s7a"></span><br><br>
+        <span id="s7b"></span><br><br>
+        Оскільки <span id="s7c"></span>, маємо <span id="s7d"></span>.<br><br>
+        <strong>Відповідь: Б</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- TASK 8 -->
+  <div class="card" id="card-8">
+    <div class="card-inner">
+      <div class="task-num">Завдання 8</div>
+      <div class="task-text">Довжина кола дорівнює 219,8&nbsp;см. Знайди радіус кола (<span id="t8q"></span>).</div>
+      <div class="options-table" id="opts-8">
+        <button class="opt-btn" onclick="choose(8,'А',this)"><span class="opt-letter">А</span><span class="otxt">70 см</span></button>
+        <button class="opt-btn" onclick="choose(8,'Б',this)"><span class="opt-letter">Б</span><span class="otxt">3,5 см</span></button>
+        <button class="opt-btn" onclick="choose(8,'В',this)"><span class="opt-letter">В</span><span class="otxt">35 см</span></button>
+        <button class="opt-btn" onclick="choose(8,'Г',this)"><span class="opt-letter">Г</span><span class="otxt">17,5 см</span></button>
+      </div>
+      <div class="feedback" id="fb-8"></div>
+      <button class="show-sol-btn" id="sol-btn-8" onclick="toggleSol(8)">&#x1F4A1; Показати розв'язок</button>
+      <div class="solution-box" id="sol-8">
+        <span id="s8a"></span><br><br>
+        <strong>Відповідь: В — 35 см</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- TASK 9 -->
+  <div class="card" id="card-9">
+    <div class="card-inner">
+      <div class="task-num">Завдання 9</div>
+      <div class="task-text">Сторони трикутника відносяться як 4&thinsp;:&thinsp;5&thinsp;:&thinsp;7, а його периметр дорівнює 48 см. Знайди довжину найбільшої сторони трикутника.</div>
+      <div class="options-table" id="opts-9">
+        <button class="opt-btn" onclick="choose(9,'А',this)"><span class="opt-letter">А</span><span class="otxt">12 см</span></button>
+        <button class="opt-btn" onclick="choose(9,'Б',this)"><span class="opt-letter">Б</span><span class="otxt">24 см</span></button>
+        <button class="opt-btn" onclick="choose(9,'В',this)"><span class="opt-letter">В</span><span class="otxt">15 см</span></button>
+        <button class="opt-btn" onclick="choose(9,'Г',this)"><span class="opt-letter">Г</span><span class="otxt">21 см</span></button>
+      </div>
+      <div class="feedback" id="fb-9"></div>
+      <button class="show-sol-btn" id="sol-btn-9" onclick="toggleSol(9)">&#x1F4A1; Показати розв'язок</button>
+      <div class="solution-box" id="sol-9">
+        Сума частин: 4 + 5 + 7 = 16.<br>
+        Одна частина: 48 ÷ 16 = 3 см.<br>
+        Найбільша сторона: 7 &times; 3 = 21 см.<br><br>
+        <strong>Відповідь: Г — 21 см</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- TASK 10 MATCHING -->
+  <div class="section-label" style="margin-top:36px;">Завдання 10</div>
+  <div class="section-instruction">
+    Установи відповідність між питаннями до задачі (1–3) та відповідями до них (А–Г).
+    <em>Увага! Одна відповідь зайва.</em><br>
+    Перетягни картку-відповідь зі стовпця праворуч до відповідного питання ліворуч.
+  </div>
+  <div class="card" id="card-10">
+    <div class="card-inner">
+      <div class="task-num">Завдання 10</div>
+      <div class="task-text">
+        У ятку для продажу привезли 240 кг слив. Першого дня продали 30% цієї кількості,
+        а другого &mdash; <span id="t10q"></span> решти.
+      </div>
+      <div class="matching-wrap">
+        <div class="matching-left-col">
+          <div class="match-question">
+            <span class="q-num">Питання 1</span>
+            Скільки кг слив продали першого дня?
+            <div class="match-drop-zone" id="drop-1" ondragover="onDragOver(event,this)" ondragleave="onDragLeave(event,this)" ondrop="onDrop(event,'drop-1')">Перетягни сюди</div>
+          </div>
+          <div class="match-question">
+            <span class="q-num">Питання 2</span>
+            Скільки кг слив продали другого дня?
+            <div class="match-drop-zone" id="drop-2" ondragover="onDragOver(event,this)" ondragleave="onDragLeave(event,this)" ondrop="onDrop(event,'drop-2')">Перетягни сюди</div>
+          </div>
+          <div class="match-question">
+            <span class="q-num">Питання 3</span>
+            Скільки кг слив залишилось в магазині після двох днів продажу?
+            <div class="match-drop-zone" id="drop-3" ondragover="onDragOver(event,this)" ondragleave="onDragLeave(event,this)" ondrop="onDrop(event,'drop-3')">Перетягни сюди</div>
+          </div>
+        </div>
+        <div class="matching-right-col">
+          <div class="match-answer-chip" id="chip-A" draggable="true" ondragstart="onDragStart(event,'chip-A','А. 60 кг')"><span class="chip-letter">А</span> 60 кг</div>
+          <div class="match-answer-chip" id="chip-B" draggable="true" ondragstart="onDragStart(event,'chip-B','Б. 72 кг')"><span class="chip-letter">Б</span> 72 кг</div>
+          <div class="match-answer-chip" id="chip-V" draggable="true" ondragstart="onDragStart(event,'chip-V','В. 80 кг')"><span class="chip-letter">В</span> 80 кг</div>
+          <div class="match-answer-chip" id="chip-G" draggable="true" ondragstart="onDragStart(event,'chip-G','Г. 108 кг')"><span class="chip-letter">Г</span> 108 кг</div>
+        </div>
+      </div>
+      <button class="check-match-btn" id="check-match-btn" onclick="checkMatch()">&#x2713; Перевірити відповідність</button>
+      <div class="feedback" id="fb-10"></div>
+      <button class="show-sol-btn" id="sol-btn-10" onclick="toggleSol(10)">&#x1F4A1; Показати розв'язок</button>
+      <div class="solution-box" id="sol-10">
+        <strong>1. Першого дня:</strong> 30% від 240 кг = 0,3 &times; 240 = <strong>72 кг &rarr; Б</strong><br><br>
+        <strong>2. Другого дня:</strong> залишок = 240 &minus; 72 = 168 кг.<br>
+        <span id="s10a"></span><br><br>
+        <strong>3. Залишилось:</strong> 168 &minus; 108 = <strong>60 кг &rarr; А</strong><br><br>
+        Відповідь 80 кг (В) &mdash; зайва.<br>
+        <strong>Відповідність: 1&ndash;Б, 2&ndash;Г, 3&ndash;А</strong>
+      </div>
+    </div>
+  </div>
+
+  <button class="all-done-btn" id="all-done-btn" onclick="showResults()">&#x1F4CA; Переглянути результати</button>
+
+  <div class="results-wrap" id="results-wrap">
+    <h2>&#x1F4CB; Звіт для вчителя</h2>
+    <div id="result-score-label" style="font-size:1.05rem;color:var(--accent-dark);font-weight:700;margin-bottom:4px;"></div>
+    <div class="result-score-bar-bg"><div class="result-score-bar-fill" id="result-bar"></div></div>
+    <div class="result-stats">
+      <div class="stat-box"><span class="stat-num" id="r-correct" style="color:var(--green)">—</span><span class="stat-label">Правильних</span></div>
+      <div class="stat-box"><span class="stat-num" id="r-wrong" style="color:var(--red)">—</span><span class="stat-label">Помилок</span></div>
+      <div class="stat-box"><span class="stat-num" id="r-pct" style="color:var(--accent)">—</span><span class="stat-label">Відсоток</span></div>
+    </div>
+    <div class="errors-list" id="errors-list"></div>
+    <div class="recommendation" id="recommendation"></div>
+  </div>
+</main>
+
+<!-- KaTeX: loaded synchronously so it's available immediately -->
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script>
+// Helper: render a LaTeX string and inject into element by id
+function tex(id, formula, display) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = katex.renderToString(formula, { throwOnError: false, displayMode: !!display });
+}
+
+// Render all math on page load
+window.addEventListener('load', function() {
+  // Task 1
+  tex('t1q', '\\dfrac{1}{9} + \\dfrac{5}{12}');
+  tex('t1a', '\\dfrac{6}{21}');
+  tex('t1b', '\\dfrac{17}{36}');
+  tex('t1c', '\\dfrac{19}{36}');
+  tex('t1d', '\\dfrac{7}{12}');
+  tex('s1a', '\\dfrac{1}{9} = \\dfrac{4}{36}');
+  tex('s1b', '\\dfrac{5}{12} = \\dfrac{15}{36}');
+  tex('s1c', '\\dfrac{4}{36} + \\dfrac{15}{36} = \\dfrac{19}{36}');
+
+  // Task 2
+  tex('t2q', '\\dfrac{2}{15} : 8');
+  tex('t2a', '\\dfrac{2}{15}');
+  tex('t2b', '1\\dfrac{1}{15}');
+  tex('t2c', '\\dfrac{1}{15}');
+  tex('t2d', '\\dfrac{1}{60}');
+  tex('s2a', '\\dfrac{2}{15} : 8 = \\dfrac{2}{15} \\cdot \\dfrac{1}{8} = \\dfrac{2}{120} = \\dfrac{1}{60}');
+
+  // Task 5
+  tex('t5q', '8 : x = 2 : 5');
+  tex('s5a', '8 \\cdot 5 = 2 \\cdot x');
+  tex('s5b', '40 = 2x \\;\\Rightarrow\\; x = 20');
+
+  // Task 6 solution
+  tex('s6a', '\\dfrac{8}{40} \\cdot 100\\% = 20\\%');
+
+  // Task 7
+  tex('t7q', 'a = 7\\dfrac{2}{9} - 2\\dfrac{1}{3} \\cdot 1\\dfrac{3}{7}');
+  tex('t7a', 'a < 3');
+  tex('t7b', '3 \\leqslant a \\leqslant 4');
+  tex('t7c', '4 < a \\leqslant 5');
+  tex('t7d', 'a > 5');
+  tex('s7a', '2\\dfrac{1}{3} \\cdot 1\\dfrac{3}{7} = \\dfrac{7}{3} \\cdot \\dfrac{10}{7} = \\dfrac{70}{21} = \\dfrac{10}{3} = 3\\dfrac{1}{3}');
+  tex('s7b', 'a = 7\\dfrac{2}{9} - 3\\dfrac{1}{3} = 7\\dfrac{2}{9} - 3\\dfrac{3}{9} = 3\\dfrac{8}{9}');
+  tex('s7c', '3 < 3\\dfrac{8}{9} \\leqslant 4');
+  tex('s7d', '3 \\leqslant a \\leqslant 4');
+
+  // Task 8
+  tex('t8q', '\\pi \\approx 3{,}14');
+  tex('s8a', 'C = 2\\pi r \\;\\Rightarrow\\; r = \\dfrac{C}{2\\pi} = \\dfrac{219{,}8}{2 \\cdot 3{,}14} = \\dfrac{219{,}8}{6{,}28} = 35 \\text{ см}');
+
+  // Task 10
+  tex('t10q', '\\dfrac{9}{14}');
+  tex('s10a', '\\dfrac{9}{14} \\cdot 168 = 9 \\cdot 12 = 108 \\text{ кг} \\;\\to\\; \\textbf{Г}');
+});
+
+// ─── GAME LOGIC ──────────────────────────────────────────────────────────────
+var CORRECT = { 1:'В', 2:'Г', 3:'В', 4:'Б', 5:'А', 6:'Б', 7:'Б', 8:'В', 9:'Г' };
+var CORRECT_MATCH = { 'drop-1':'Б. 72 кг', 'drop-2':'Г. 108 кг', 'drop-3':'А. 60 кг' };
+var state = { answered: {}, matchAnswered: false };
+
+function choose(taskId, letter, btn) {
+  if (state.answered[taskId] !== undefined) return;
+  var opts = document.querySelectorAll('#opts-' + taskId + ' .opt-btn');
+  opts.forEach(function(b) { b.disabled = true; });
+  var correct = CORRECT[taskId];
+  var isCorrect = letter === correct;
+  opts.forEach(function(b) {
+    var l = b.querySelector('.opt-letter').textContent.trim();
+    if (l === correct) b.classList.add('correct-ans');
+    else if (l === letter && !isCorrect) b.classList.add('wrong-ans');
+  });
+  var fb = document.getElementById('fb-' + taskId);
+  fb.className = 'feedback ' + (isCorrect ? 'ok' : 'err');
+  fb.style.display = 'flex';
+  fb.innerHTML = isCorrect ? '&#x2705; Правильно!' : '&#x274C; Невірно. Правильна відповідь: <strong>' + correct + '</strong>';
+  document.getElementById('card-' + taskId).classList.add(isCorrect ? 'correct' : 'wrong');
+  if (!isCorrect) document.getElementById('sol-btn-' + taskId).style.display = 'inline-block';
+  state.answered[taskId] = isCorrect;
+  updateProgress();
+}
+
+function toggleSol(taskId) {
+  var box = document.getElementById('sol-' + taskId);
+  var btn = document.getElementById('sol-btn-' + taskId);
+  if (box.style.display === 'block') {
+    box.style.display = 'none';
+    btn.textContent = '\uD83D\uDCA1 Показати розв\u2019язок';
+  } else {
+    box.style.display = 'block';
+    btn.textContent = '\uD83D\uDD3C Сховати розв\u2019язок';
+  }
+}
+
+var dragChipId = null, dragChipText = null, dropContent = {};
+function onDragStart(e, chipId, text) {
+  dragChipId = chipId; dragChipText = text;
+  e.dataTransfer.effectAllowed = 'move';
+  setTimeout(function(){ document.getElementById(chipId).classList.add('dragging'); }, 0);
+}
+function onDragOver(e, el) { e.preventDefault(); el.classList.add('over'); }
+function onDragLeave(e, el) { el.classList.remove('over'); }
+function onDrop(e, dropId) {
+  e.preventDefault();
+  var zone = document.getElementById(dropId);
+  zone.classList.remove('over');
+  if (state.matchAnswered || !dragChipId) return;
+  if (dropContent[dropId]) document.getElementById(dropContent[dropId].chipId).classList.remove('used');
+  for (var dId in dropContent) {
+    if (dropContent[dId].chipId === dragChipId) {
+      var oz = document.getElementById(dId);
+      oz.classList.remove('filled');
+      oz.textContent = 'Перетягни сюди';
+      delete dropContent[dId]; break;
+    }
+  }
+  dropContent[dropId] = { chipId: dragChipId, text: dragChipText };
+  zone.classList.add('filled');
+  zone.textContent = dragChipText;
+  document.getElementById(dragChipId).classList.add('used');
+  document.getElementById(dragChipId).classList.remove('dragging');
+  dragChipId = null; dragChipText = null;
+}
+
+function checkMatch() {
+  if (state.matchAnswered) return;
+  var drops = ['drop-1','drop-2','drop-3'];
+  for (var i = 0; i < drops.length; i++) {
+    if (!dropContent[drops[i]]) { alert('Будь ласка, заповни всі три рядки перед перевіркою!'); return; }
+  }
+  state.matchAnswered = true;
+  document.getElementById('check-match-btn').disabled = true;
+  var cnt = 0;
+  drops.forEach(function(d) {
+    var zone = document.getElementById(d);
+    var ok = dropContent[d].text === CORRECT_MATCH[d];
+    zone.classList.remove('filled');
+    zone.classList.add(ok ? 'drop-correct' : 'drop-wrong');
+    if (ok) cnt++;
+  });
+  ['chip-A','chip-B','chip-V','chip-G'].forEach(function(c){
+    var el = document.getElementById(c);
+    el.setAttribute('draggable','false'); el.style.cursor='default';
+  });
+  var allOk = cnt === 3;
+  state.answered[10] = allOk;
+  var fb = document.getElementById('fb-10');
+  fb.className = 'feedback ' + (allOk ? 'ok' : 'err');
+  fb.style.display = 'flex';
+  fb.innerHTML = allOk ? '&#x2705; Правильно! Всі відповідності встановлено вірно.' : '&#x274C; Є помилки. Правильних відповідностей: ' + cnt + ' з 3.';
+  document.getElementById('card-10').classList.add(allOk ? 'correct' : 'wrong');
+  if (!allOk) document.getElementById('sol-btn-10').style.display = 'inline-block';
+  updateProgress();
+}
+
+function updateProgress() {
+  var done = Object.keys(state.answered).length;
+  var pct = Math.round(done / 10 * 100);
+  document.getElementById('prog-text').textContent = 'Виконано: ' + done + ' / 10';
+  document.getElementById('prog-pct').textContent = pct + '%';
+  document.getElementById('progress-bar').style.width = pct + '%';
+  if (done === 10) document.getElementById('all-done-btn').style.display = 'block';
+}
+
+function showResults() {
+  var correct = Object.values(state.answered).filter(Boolean).length;
+  var pct = Math.round(correct / 10 * 100);
+  document.getElementById('r-correct').textContent = correct;
+  document.getElementById('r-wrong').textContent = 10 - correct;
+  document.getElementById('r-pct').textContent = pct + '%';
+  document.getElementById('result-score-label').textContent = 'Результат: ' + correct + ' / 10 (' + pct + '%)';
+  var bar = document.getElementById('result-bar');
+  bar.style.width = pct + '%';
+  bar.style.background = pct >= 75 ? 'linear-gradient(90deg,#2ecc71,#1abc9c)' : pct >= 50 ? 'linear-gradient(90deg,#8c7cf5,#5b4fcf)' : 'linear-gradient(90deg,#e74c3c,#c0392b)';
+  var errIds = Object.entries(state.answered).filter(function(e){return !e[1];}).map(function(e){return +e[0];}).sort(function(a,b){return a-b;});
+  var errDiv = document.getElementById('errors-list');
+  errDiv.innerHTML = errIds.length ? '<h3>Завдання з помилками</h3>' + errIds.map(function(id){return '<span class="error-tag">Завдання '+id+'</span>';}).join('') : '<h3 style="color:var(--green)">&#x2705; Немає помилок &mdash; відмінна робота!</h3>';
+  var msg = pct >= 90
+    ? '<strong>&#x1F3C6; Відмінний результат!</strong> Учень(учениця) чудово опанував(а) матеріал І семестру. Рекомендується запропонувати завдання підвищеного рівня.'
+    : pct >= 75 ? '<strong>&#x1F44D; Достатній рівень.</strong> Більшість тем засвоєно добре. Варто повторити теми, у яких виникли труднощі.'
+    : pct >= 50 ? '<strong>&#x1F4D8; Середній рівень.</strong> Рекомендується провести індивідуальну роботу із закріплення тем: дроби, відсотки, пропорції.'
+    : '<strong>&#x26A0;&#xFE0F; Низький рівень.</strong> Потребує системного повторення матеріалу. Рекомендується додаткова робота з учителем.';
+  document.getElementById('recommendation').innerHTML = msg;
+  var rw = document.getElementById('results-wrap');
+  rw.style.display = 'block';
+  rw.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
+</body>
+</html>
