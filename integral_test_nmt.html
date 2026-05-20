@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тест: Визначений інтеграл — НМТ</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Unbounded:wght@400;700&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" crossorigin="anonymous">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f3f2fb;--surface:#fff;--border:#d4cef0;--text:#1a1630;--muted:#7068a0;
+  --accent:#5b4fcf;--accent2:#7c6af0;--accent-light:#edeaf9;--accent-mid:#c7bff5;
+  --green:#1a7a50;--green-light:#e4f5ed;--red:#b03060;--red-light:#fbe8ef;
+  --amber:#7a5800;--amber-light:#fdf4e0;
+  --mono:'JetBrains Mono',monospace;--display:'Unbounded',sans-serif;--serif:'PT Serif',serif;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--serif);min-height:100vh;}
+
+.page-header{
+  background:linear-gradient(135deg,#3d2fa0 0%,#5b4fcf 50%,#8c7cf5 100%);
+  color:#fff;padding:32px 24px 24px;text-align:center;position:relative;overflow:hidden;
+}
+.page-header h1{font-family:var(--display);font-size:clamp(14px,3.5vw,22px);font-weight:700;letter-spacing:-0.02em;margin-bottom:6px;}
+.subtitle{font-family:var(--mono);font-size:12px;opacity:.72;}
+.author{font-family:var(--serif);font-style:italic;font-size:12px;opacity:.6;margin-top:5px;}
+.progress-wrap{background:rgba(255,255,255,.18);height:5px;margin-top:18px;border-radius:3px;overflow:hidden;}
+.progress-fill{height:100%;background:#fff;border-radius:3px;transition:width .4s ease;width:0%;}
+
+.container{max-width:760px;margin:0 auto;padding:28px 16px 80px;}
+
+.section-banner{
+  display:flex;align-items:center;gap:12px;margin:32px 0 16px;
+  padding:13px 17px;border-radius:11px;
+  background:linear-gradient(135deg,var(--accent-light),#e8e2fb);
+  border:1px solid var(--accent-mid);
+}
+.section-banner.med{background:linear-gradient(135deg,#ebe5fb,#ddd5f8);border-color:#b8aae8;}
+.sec-num{
+  font-family:var(--display);font-size:18px;font-weight:700;color:var(--accent);
+  width:36px;height:36px;border-radius:50%;background:#fff;
+  display:flex;align-items:center;justify-content:center;
+  border:1.5px solid var(--accent-mid);flex-shrink:0;
+}
+.sec-title{font-family:var(--display);font-size:11px;font-weight:700;color:var(--accent);letter-spacing:.04em;}
+.sec-desc{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:3px;}
+
+.qcard{
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:20px 20px 18px;margin-bottom:12px;
+  transition:box-shadow .2s,border-color .2s;
+  border-left:4px solid transparent;
+}
+.qcard:hover{box-shadow:0 3px 18px rgba(91,79,207,.1);border-color:var(--accent-mid);}
+.qcard.ok{border-left-color:var(--green);}
+.qcard.bad{border-left-color:var(--red);}
+
+.qhead{display:flex;align-items:flex-start;gap:12px;margin-bottom:15px;}
+.qnum{
+  font-family:var(--display);font-size:10px;font-weight:700;color:var(--accent);
+  background:var(--accent-light);border-radius:6px;padding:4px 10px;
+  white-space:nowrap;flex-shrink:0;border:1px solid var(--accent-mid);
+}
+.qnum.med{color:#5a3a9a;background:#ede7fb;border-color:#c4b0f0;}
+.qtext{font-family:var(--serif);font-size:15px;line-height:1.9;color:var(--text);}
+
+.opts{display:flex;flex-direction:column;gap:7px;}
+.opt{
+  display:flex;align-items:center;gap:10px;padding:11px 14px;
+  border:1.5px solid var(--border);border-radius:9px;cursor:pointer;
+  transition:all .14s;font-family:var(--serif);font-size:15px;
+  background:var(--bg);user-select:none;line-height:1.7;
+}
+.opt:hover:not(.dis){border-color:var(--accent2);background:var(--accent-light);color:var(--accent);}
+.opt.ok{border-color:var(--green)!important;background:var(--green-light)!important;color:var(--green)!important;font-weight:700;}
+.opt.bad{border-color:var(--red)!important;background:var(--red-light)!important;color:var(--red)!important;}
+.opt.show{border-color:var(--green)!important;background:var(--green-light)!important;color:var(--green)!important;font-weight:700;}
+.opt.dis{cursor:default;}
+.opt .katex,.opt .katex *{color:inherit!important;}
+
+.oletter{
+  font-family:var(--display);font-weight:700;font-size:10px;
+  min-width:24px;height:24px;border-radius:5px;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--border);color:var(--muted);flex-shrink:0;
+}
+.opt.ok .oletter{background:var(--green)!important;color:#fff!important;}
+.opt.bad .oletter{background:var(--red)!important;color:#fff!important;}
+.opt.show .oletter{background:var(--green)!important;color:#fff!important;}
+
+.fb{margin-top:10px;font-family:var(--mono);font-size:12px;display:none;}
+.fb.ok{color:var(--green);display:block;}
+.fb.bad{color:var(--red);display:block;}
+
+.hbtn{
+  margin-top:10px;padding:8px 16px;font-family:var(--mono);font-size:12px;font-weight:600;
+  border:1.5px solid #c0a020;background:var(--amber-light);color:var(--amber);
+  border-radius:8px;cursor:pointer;display:none;transition:background .14s;
+}
+.hbtn:hover{background:#fde8a0;}
+
+.hbox{
+  margin-top:10px;padding:16px 18px;
+  background:linear-gradient(135deg,#fef9ec,#fdf4d8);
+  border:1.5px solid #d4aa40;border-radius:10px;display:none;
+}
+.hbox h4{
+  font-family:var(--display);font-size:10px;font-weight:700;color:var(--amber);
+  margin-bottom:10px;letter-spacing:.07em;text-transform:uppercase;
+}
+.hsteps{font-family:var(--serif);font-size:14.5px;line-height:2.3;color:#4a3400;}
+.hsteps .katex,.hsteps .katex *{color:#4a3400!important;}
+.hsteps .katex-display{margin:4px 0!important;}
+
+.ans-count{font-family:var(--mono);font-size:12px;color:var(--muted);text-align:center;margin-top:20px;}
+.fin-wrap{text-align:center;margin-top:28px;}
+.fin-btn{
+  display:none;padding:14px 44px;font-family:var(--display);font-size:12px;font-weight:700;
+  background:linear-gradient(135deg,#3d2fa0,#5b4fcf);color:#fff;border:none;
+  border-radius:12px;cursor:pointer;letter-spacing:.04em;
+  box-shadow:0 4px 22px rgba(91,79,207,.32);transition:opacity .15s,transform .15s;
+}
+.fin-btn:hover{opacity:.9;transform:translateY(-1px);}
+
+.summary{
+  display:none;background:var(--surface);border:1.5px solid var(--border);
+  border-radius:16px;padding:28px 24px 24px;margin-top:32px;
+  box-shadow:0 4px 28px rgba(91,79,207,.09);
+}
+.sum-hd{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);}
+.sum-title{font-family:var(--display);font-size:15px;font-weight:700;color:var(--accent);}
+.sum-sub{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:3px;}
+
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
+.stat{
+  background:linear-gradient(135deg,var(--accent-light),#e8e2fb);
+  border:1px solid var(--accent-mid);border-radius:10px;padding:14px 10px;text-align:center;
+}
+.stat-val{font-family:var(--display);font-size:26px;font-weight:700;color:var(--accent);}
+.stat-lbl{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:4px;}
+
+.sbar-wrap{background:var(--border);height:10px;border-radius:5px;margin:0 0 20px;overflow:hidden;}
+.sbar-fill{height:100%;border-radius:5px;transition:width .9s cubic-bezier(.34,1.56,.64,1);width:0%;}
+
+.etitle{font-family:var(--display);font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin:16px 0 8px;}
+.etitle.b{color:var(--accent);}
+.etitle.m{color:#7030c0;}
+.eitem{
+  display:flex;gap:10px;align-items:flex-start;padding:10px 13px;
+  background:var(--red-light);border:1px solid #e8b0c8;border-radius:8px;
+  margin-bottom:6px;font-family:var(--serif);font-size:13px;color:var(--red);line-height:1.5;
+}
+.enum{font-family:var(--display);font-size:10px;font-weight:700;flex-shrink:0;padding-top:2px;}
+
+.advice{
+  margin-top:16px;padding:14px 16px;
+  background:var(--accent-light);border:1.5px solid var(--accent-mid);
+  border-radius:10px;font-family:var(--serif);font-size:13px;color:var(--accent);line-height:1.7;
+}
+.advice strong{font-family:var(--display);font-size:10px;font-weight:700;display:block;margin-bottom:5px;letter-spacing:.05em;text-transform:uppercase;}
+.all-ok{padding:18px;background:var(--green-light);border:1.5px solid #90d0b0;border-radius:10px;font-family:var(--serif);font-size:14px;color:var(--green);text-align:center;}
+
+@media(max-width:480px){
+  .stat-grid{grid-template-columns:1fr 1fr;}
+  .stat-grid .stat:last-child{grid-column:span 2;}
+}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Визначений інтеграл</h1>
+  <p class="subtitle">Підготовка до НМТ з математики &nbsp;·&nbsp; 20 завдань двох рівнів</p>
+  <p class="author">Укладач: Мілочкіна Л.В.</p>
+  <div class="progress-wrap"><div class="progress-fill" id="progressBar"></div></div>
+</div>
+
+<div class="container">
+  <div class="section-banner">
+    <div class="sec-num">1</div>
+    <div>
+      <div class="sec-title">Рівень 1 — базові завдання (1–10)</div>
+      <div class="sec-desc">Безпосереднє застосування формули Ньютона–Лейбніца</div>
+    </div>
+  </div>
+  <div id="bq"></div>
+
+  <div class="section-banner med">
+    <div class="sec-num" style="color:#7030c0;border-color:#c4b0f0;">2</div>
+    <div>
+      <div class="sec-title" style="color:#7030c0;">Рівень 2 — середній рівень (11–20)</div>
+      <div class="sec-desc">Площі фігур, властивості інтегралів, первісна</div>
+    </div>
+  </div>
+  <div id="mq"></div>
+
+  <div class="ans-count" id="ansCount">Відповіді: 0 / 20</div>
+  <div class="fin-wrap">
+    <button class="fin-btn" id="finBtn" onclick="showSummary()">Переглянути результати</button>
+  </div>
+
+  <div class="summary" id="summary">
+    <div class="sum-hd">
+      <div style="font-size:28px">📊</div>
+      <div>
+        <div class="sum-title">Звіт для вчителя</div>
+        <div class="sum-sub">Мілочкіна Л.В. &nbsp;·&nbsp; Визначений інтеграл, підготовка до НМТ</div>
+      </div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat"><div class="stat-val" id="sC">—</div><div class="stat-lbl">Правильних</div></div>
+      <div class="stat"><div class="stat-val" id="sW">—</div><div class="stat-lbl">Помилок</div></div>
+      <div class="stat"><div class="stat-val" id="sP">—</div><div class="stat-lbl">Виконано</div></div>
+    </div>
+    <div class="sbar-wrap"><div class="sbar-fill" id="sBar"></div></div>
+    <div id="errBlock"></div>
+  </div>
+</div>
+
+<!-- KaTeX JS після контенту -->
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+
+<script>
+// ── Дані завдань ──────────────────────────────────────────────
+// Формули в LaTeX. Рендеринг відбувається після вставки в DOM.
+const QS = [
+  // РІВЕНЬ 1
+  {
+    lv:'b',
+    q:'Обчисліть $$\\int_{0}^{2} 2x\\,dx$$',
+    o:['\\(2\\)','\\(4\\)','\\(6\\)','\\(8\\)'], a:1,
+    h:'Первісна функції \\(2x\\) є \\(F(x)=x^2\\).<br>За формулою Ньютона–Лейбніца:<br>$$F(2)-F(0)=4-0=4$$'
+  },
+  {
+    lv:'b',
+    q:'Обчисліть $$\\int_{1}^{3} 1\\,dx$$',
+    o:['\\(1\\)','\\(2\\)','\\(3\\)','\\(4\\)'], a:1,
+    h:'$$\\int_{1}^{3}1\\,dx = x\\Big|_{1}^{3} = 3-1=2$$'
+  },
+  {
+    lv:'b',
+    q:'Обчисліть $$\\int_{0}^{1} x^2\\,dx$$',
+    o:['\\(\\dfrac{1}{4}\\)','\\(\\dfrac{1}{3}\\)','\\(\\dfrac{1}{2}\\)','\\(1\\)'], a:1,
+    h:'Первісна: \\(F(x)=\\dfrac{x^3}{3}\\)<br>$$F(1)-F(0)=\\dfrac{1}{3}-0=\\dfrac{1}{3}$$'
+  },
+  {
+    lv:'b',
+    q:'Обчисліть $$\\int_{-1}^{1} x\\,dx$$',
+    o:['\\(-2\\)','\\(-1\\)','\\(0\\)','\\(1\\)'], a:2,
+    h:'\\(F(x)=\\dfrac{x^2}{2}\\)<br>$$F(1)-F(-1)=\\dfrac{1}{2}-\\dfrac{1}{2}=0$$Функція \\(f(x)=x\\) непарна, межі симетричні, тому інтеграл дорівнює нулю.'
+  },
+  {
+    lv:'b',
+    q:'Обчисліть $$\\int_{0}^{3} 3\\,dx$$',
+    o:['\\(3\\)','\\(6\\)','\\(9\\)','\\(12\\)'], a:2,
+    h:'$$\\int_{0}^{3}3\\,dx = 3x\\Big|_{0}^{3} = 9-0=9$$'
+  },
+  {
+    lv:'b',
+    q:'Обчисліть $$\\int_{1}^{2} 2x\\,dx$$',
+    o:['\\(1\\)','\\(2\\)','\\(3\\)','\\(4\\)'], a:2,
+    h:'\\(F(x)=x^2\\)<br>$$F(2)-F(1)=4-1=3$$'
+  },
+  {
+    lv:'b',
+    q:'Обчисліть $$\\int_{0}^{4}\\sqrt{x}\\,dx$$',
+    o:['\\(\\dfrac{8}{3}\\)','\\(4\\)','\\(\\dfrac{16}{3}\\)','\\(8\\)'], a:2,
+    h:'\\(F(x)=\\dfrac{2}{3}x^{3/2}\\)<br>$$F(4)-F(0)=\\dfrac{2}{3}\\cdot 8-0=\\dfrac{16}{3}$$'
+  },
+  {
+    lv:'b',
+    q:'Обчисліть $$\\int_{0}^{\\pi}\\sin x\\,dx$$',
+    o:['\\(0\\)','\\(1\\)','\\(2\\)','\\(\\pi\\)'], a:2,
+    h:'\\(F(x)=-\\cos x\\)<br>$$F(\\pi)-F(0)=-\\cos\\pi+\\cos 0=1+1=2$$'
+  },
+  {
+    lv:'b',
+    q:'Обчисліть $$\\int_{1}^{e}\\dfrac{1}{x}\\,dx$$',
+    o:['\\(0\\)','\\(1\\)','\\(e\\)','\\(e-1\\)'], a:1,
+    h:'\\(F(x)=\\ln x\\)<br>$$F(e)-F(1)=\\ln e-\\ln 1=1-0=1$$'
+  },
+  {
+    lv:'b',
+    q:'Обчисліть $$\\int_{0}^{2}(x+1)\\,dx$$',
+    o:['\\(2\\)','\\(3\\)','\\(4\\)','\\(5\\)'], a:2,
+    h:'\\(F(x)=\\dfrac{x^2}{2}+x\\)<br>$$F(2)-F(0)=(2+2)-0=4$$'
+  },
+  // РІВЕНЬ 2
+  {
+    lv:'m',
+    q:'Обчисліть $$\\int_{0}^{1}\\left(3x^2-2x+1\\right)dx$$',
+    o:['\\(0\\)','\\(1\\)','\\(2\\)','\\(3\\)'], a:1,
+    h:'\\(F(x)=x^3-x^2+x\\)<br>$$F(1)-F(0)=(1-1+1)-0=1$$'
+  },
+  {
+    lv:'m',
+    q:'Обчисліть $$\\int_{1}^{2}\\left(x^2-x\\right)dx$$',
+    o:['\\(\\dfrac{1}{6}\\)','\\(\\dfrac{1}{3}\\)','\\(\\dfrac{5}{6}\\)','\\(\\dfrac{2}{3}\\)'], a:2,
+    h:'\\(F(x)=\\dfrac{x^3}{3}-\\dfrac{x^2}{2}\\)<br>\\(F(2)=\\dfrac{8}{3}-2=\\dfrac{2}{3}\\)<br>\\(F(1)=\\dfrac{1}{3}-\\dfrac{1}{2}=-\\dfrac{1}{6}\\)<br>$$F(2)-F(1)=\\dfrac{2}{3}+\\dfrac{1}{6}=\\dfrac{5}{6}$$'
+  },
+  {
+    lv:'m',
+    q:'Обчисліть $$\\int_{0}^{\\pi/2}\\cos x\\,dx$$',
+    o:['\\(0\\)','\\(\\dfrac{1}{2}\\)','\\(1\\)','\\(\\dfrac{\\pi}{2}\\)'], a:2,
+    h:'\\(F(x)=\\sin x\\)<br>$$F\\!\\left(\\dfrac{\\pi}{2}\\right)-F(0)=\\sin\\dfrac{\\pi}{2}-\\sin 0=1-0=1$$'
+  },
+  {
+    lv:'m',
+    q:'Обчисліть $$\\int_{1}^{4}\\dfrac{1}{\\sqrt{x}}\\,dx$$',
+    o:['\\(1\\)','\\(2\\)','\\(3\\)','\\(4\\)'], a:1,
+    h:'\\(\\dfrac{1}{\\sqrt{x}}=x^{-1/2}\\), первісна \\(F(x)=2\\sqrt{x}\\)<br>$$F(4)-F(1)=2{\\cdot}2-2{\\cdot}1=4-2=2$$'
+  },
+  {
+    lv:'m',
+    q:'Знайдіть площу фігури, обмеженої \\(y=x^2\\),&ensp;\\(y=0\\),&ensp;\\(x\\in[0,\\,3]\\)',
+    o:['\\(3\\)','\\(6\\)','\\(9\\)','\\(18\\)'], a:2,
+    h:'$$S=\\int_{0}^{3}x^2\\,dx=\\dfrac{x^3}{3}\\Big|_{0}^{3}=\\dfrac{27}{3}=9$$'
+  },
+  {
+    lv:'m',
+    q:'Обчисліть $$\\int_{-2}^{2}x^3\\,dx$$',
+    o:['\\(-8\\)','\\(0\\)','\\(8\\)','\\(16\\)'], a:1,
+    h:'Функція \\(f(x)=x^3\\) непарна.<br>Властивість: для непарної \\(f\\):<br>$$\\int_{-a}^{a}f(x)\\,dx=0 \\implies \\int_{-2}^{2}x^3\\,dx=0$$'
+  },
+  {
+    lv:'m',
+    q:'Обчисліть $$\\int_{0}^{1}e^x\\,dx$$',
+    o:['\\(1\\)','\\(e\\)','\\(e-1\\)','\\(e+1\\)'], a:2,
+    h:'\\(F(x)=e^x\\)<br>$$F(1)-F(0)=e^1-e^0=e-1$$'
+  },
+  {
+    lv:'m',
+    q:'Обчисліть $$\\int_{1}^{2}\\!\\left(2x+\\dfrac{1}{x^2}\\right)dx$$',
+    o:['\\(2\\)','\\(\\dfrac{7}{2}\\)','\\(3\\)','\\(\\dfrac{5}{2}\\)'], a:1,
+    h:'\\(F(x)=x^2-\\dfrac{1}{x}\\)<br>\\(F(2)=4-\\dfrac{1}{2}=\\dfrac{7}{2}\\)<br>\\(F(1)=1-1=0\\)<br>$$F(2)-F(1)=\\dfrac{7}{2}-0=\\dfrac{7}{2}$$'
+  },
+  {
+    lv:'m',
+    q:'Первісна функції \\(f(x)=2x+3\\) є \\(F(x)=x^2+3x\\). Знайдіть $$\\int_{0}^{2}f(x)\\,dx$$',
+    o:['\\(8\\)','\\(10\\)','\\(12\\)','\\(6\\)'], a:1,
+    h:'\\(F(2)=4+6=10\\)<br>\\(F(0)=0\\)<br>$$F(2)-F(0)=10-0=10$$'
+  },
+  {
+    lv:'m',
+    q:'Нехай \\(F(x)=x^3-5x+2\\) — первісна \\(f(x)\\). Знайдіть $$\\int_{0}^{2}f(x)\\,dx$$',
+    o:['\\(-2\\)','\\(0\\)','\\(2\\)','\\(4\\)'], a:0,
+    h:'\\(F(2)=8-10+2=0\\)<br>\\(F(0)=0-0+2=2\\)<br>$$F(2)-F(0)=0-2=-2$$'
+  }
+];
+
+const L=['А','Б','В','Г'];
+const ans={};
+let total=0;
+
+function rk(el){
+  // Рендеримо KaTeX у елементі
+  if(window.renderMathInElement){
+    renderMathInElement(el,{
+      delimiters:[
+        {left:'$$',right:'$$',display:true},
+        {left:'\\(',right:'\\)',display:false}
+      ],
+      throwOnError:false,
+      output:'html'
+    });
+  }
+}
+
+function build(){
+  const bq=document.getElementById('bq');
+  const mq=document.getElementById('mq');
+  QS.forEach((q,i)=>{
+    const c=document.createElement('div');
+    c.className='qcard';c.id='c'+i;
+    c.innerHTML=`
+      <div class="qhead">
+        <span class="qnum${q.lv==='m'?' med':''}">№${i+1}</span>
+        <span class="qtext">${q.q}</span>
+      </div>
+      <div class="opts" id="o${i}">
+        ${q.o.map((t,j)=>`
+          <div class="opt" id="o${i}_${j}" onclick="pick(${i},${j})">
+            <span class="oletter">${L[j]}</span><span>${t}</span>
+          </div>`).join('')}
+      </div>
+      <div class="fb" id="f${i}"></div>
+      <button class="hbtn" id="hb${i}" onclick="hint(${i})">💡 Показати розв'язок</button>
+      <div class="hbox" id="hx${i}" style="display:none">
+        <h4>Покроковий розв'язок</h4>
+        <div class="hsteps">${q.h}</div>
+      </div>`;
+    (q.lv==='b'?bq:mq).appendChild(c);
+    rk(c);
+  });
+}
+
+function pick(i,j){
+  if(ans[i]!==undefined) return;
+  ans[i]=j; total++;
+  const cor=QS[i].a;
+  document.querySelectorAll(`#o${i} .opt`).forEach(el=>el.classList.add('dis'));
+  document.getElementById(`o${i}_${j}`).classList.add(j===cor?'ok':'bad');
+  if(j!==cor) document.getElementById(`o${i}_${cor}`).classList.add('show');
+  const fb=document.getElementById('f'+i);
+  fb.innerHTML=j===cor?'✓ Правильно!':`✗ Неправильно. Правильна відповідь: <strong>${L[cor]}</strong>`;
+  fb.className='fb '+(j===cor?'ok':'bad');
+  const card=document.getElementById('c'+i);
+  card.classList.add(j===cor?'ok':'bad');
+  if(j!==cor) document.getElementById('hb'+i).style.display='block';
+  prog();
+}
+
+function hint(i){
+  const hx=document.getElementById('hx'+i);
+  hx.style.display='block';
+  document.getElementById('hb'+i).style.display='none';
+  rk(hx);
+}
+
+function prog(){
+  document.getElementById('progressBar').style.width=(total/QS.length*100)+'%';
+  document.getElementById('ansCount').textContent=`Відповіді: ${total} / ${QS.length}`;
+  if(total>=QS.length) document.getElementById('finBtn').style.display='inline-block';
+}
+
+function showSummary(){
+  let cor=0;
+  const eb=[],em=[];
+  QS.forEach((q,i)=>{
+    if(ans[i]===q.a) cor++;
+    else (q.lv==='b'?eb:em).push({n:i+1,t:q.q});
+  });
+  const pct=Math.round(cor/QS.length*100);
+  document.getElementById('sC').textContent=cor;
+  document.getElementById('sW').textContent=QS.length-cor;
+  document.getElementById('sP').textContent=pct+'%';
+  const bar=document.getElementById('sBar');
+  bar.style.background=pct>=75?'#1a7a50':pct>=50?'#5b4fcf':'#b03060';
+  setTimeout(()=>{bar.style.width=pct+'%';},120);
+
+  const eb2=document.getElementById('errBlock');
+  if(!eb.length&&!em.length){
+    eb2.innerHTML='<div class="all-ok">🎉 Всі 20 завдань виконано правильно! Відмінний результат!</div>';
+  } else {
+    let h='';
+    if(eb.length){
+      h+=`<div class="etitle b">Помилки — базовий рівень (${eb.length} шт.)</div>`;
+      eb.forEach(e=>{h+=`<div class="eitem"><span class="enum">№${e.n}</span><span>${e.t}</span></div>`;});
+    }
+    if(em.length){
+      h+=`<div class="etitle m" style="margin-top:${eb.length?14:0}px">Помилки — середній рівень (${em.length} шт.)</div>`;
+      em.forEach(e=>{h+=`<div class="eitem"><span class="enum">№${e.n}</span><span>${e.t}</span></div>`;});
+    }
+    const adv=pct>=80?'Результат добрий. Рекомендовано опрацювати теми завдань із помилками.'
+      :pct>=60?'Результат задовільний. Потребує додаткового відпрацювання.'
+      :'Результат потребує серйозної уваги. Рекомендовано повторити теорію та розібрати розв\'язки всіх помилкових завдань.';
+    h+=`<div class="advice"><strong>Рекомендація вчителю</strong>${adv}</div>`;
+    eb2.innerHTML=h;
+  }
+
+  const sum=document.getElementById('summary');
+  sum.style.display='block';
+  document.getElementById('finBtn').style.display='none';
+  rk(sum);
+  setTimeout(()=>sum.scrollIntoView({behavior:'smooth',block:'start'}),200);
+}
+
+// Запуск — чекаємо KaTeX
+(function waitKatex(){
+  if(window.katex && window.renderMathInElement){
+    build();
+  } else {
+    setTimeout(waitKatex, 30);
+  }
+})();
+</script>
+</body>
+</html>
